@@ -1,0 +1,11 @@
+.gallery-image {
+	display: inline;
+}
+
+.gallery-image img {
+	margin-bottom: 50px;
+}
+
+.hide {
+	display: none;
+}

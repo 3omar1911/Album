@@ -11,6 +11,15 @@
 |
 */
 
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::group(['middleware' => ['auth']], function() {
+	Route::get('/albums/create', ['as' => 'albums.create', 'uses' => 'AlbumsController@create']);
+	Route::post('/albums', ['as' => 'albums.store', 'uses' => 'AlbumsController@store']);
 });
