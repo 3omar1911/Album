@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Rules\ImageHasName;
 use DB;
 use App\Album;
+use App\Image as ImageModel;
 use App\Services\AlbumGalleryManager;
 
 class AlbumsController extends Controller
@@ -13,7 +14,7 @@ class AlbumsController extends Controller
 
 	private $albumGalleryManager;
 
-	public function __costruct(AlbumGalleryManager $albumGalleryManager) {
+	public function __construct(AlbumGalleryManager $albumGalleryManager) {
 		$this->albumGalleryManager = $albumGalleryManager;
 	}
 
@@ -39,20 +40,24 @@ class AlbumsController extends Controller
 
 			DB::beginTransaction();
 			$album = $this->createAlbum($request->all());
-			$this->createGallery($request, $album);
+			$imagesNames = $this->createGallery($request, $album);
+			$this->attachImagesToAlbum($album, $imagesNames);
 			DB::commit();
 		} catch (\Exception $e) {
 			
 			DB::rollback();
-			session()->flash('alert', $e->getMessage());
+			session()->flash('alert', trans('albums.creation_failed'). $e->getMessage());
 			return view('albums.create');
 		}
+
+		session()->flash('success', trans('albums.created_successfully'));
+		return redirect()->route('albums.create');
 	}
 
 	public function createAlbum($data) {
 
 		$album = Album::create([
-			'name' => "album_name",
+			'name' => $data["album_name"],
 		]);
 
 		if(!$album)
@@ -73,7 +78,42 @@ class AlbumsController extends Controller
 
 		$this->albumGalleryManager->setFiles($request->file('album_images'));
 		$this->albumGalleryManager->setRequestData($request->all());
-		$this->albumGalleryManager->createGallery();
+
+		$cropParameters = [
+			[
+				'width' => 300,
+				'height' => 300,
+				'x' => 0,
+				'y' => 0,
+			], [
+				'width' => 400,
+				'height' => 400,
+				'x' => 0,
+				'y' => 0,
+			]
+		];
+		return $this->albumGalleryManager->createGallery($cropParameters);
+	}
+
+	/**
+	 * Attach Images to Album
+	 *
+	 * @param  \App\Album $album
+	 * @param  array  $imagesNames
+	 */
+	public function attachImagesToAlbum($album, $imagesNames) {
+
+		foreach($imagesNames as $name) {
+
+			$image = ImageModel::create([
+				'image_name' => $name,
+				'album_id' => $album->id,
+			]);
+
+			if(!$image) {
+				throw new \Exception(trans('albums.error_occured'));
+			}
+		}
 	}
 
 	/**

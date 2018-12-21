@@ -78,7 +78,7 @@
             @if(session()->has('success'))
                 <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-md-8 success success-danger">
+                        <div class="col-md-8 alert alert-success">
                             {{ session()->pull('success') }}
                         </div>
                     </div>
