@@ -113,7 +113,7 @@ $(document).ready(function() {
 		var valid = true;
 
 		// validate the album title
-		if($('#album_title').val() == "") {
+		if($('#album_name').val() == "") {
 			valid = false;
 			$('#validation-errors ul').append('<li>Album must have a name</li>');
 		}

@@ -4,6 +4,8 @@
 
 .gallery-image img {
 	margin-bottom: 50px;
+	width: 200px;
+	height: 200px;
 }
 
 .hide {

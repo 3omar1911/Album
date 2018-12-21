@@ -23,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // $this->app->bind('App\Services\AblumsGalleryManager', function() {
+        //     return new AblumsGalleryManager([], []);
+        // });
     }
 }

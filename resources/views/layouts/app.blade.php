@@ -74,6 +74,27 @@
         </nav>
 
         <main class="py-4">
+
+            @if(session()->has('success'))
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 success success-danger">
+                            {{ session()->pull('success') }}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if(session()->has('alert'))
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 alert alert-danger">
+                            {{ session()->pull('alert') }}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             @yield('content')
         </main>
     </div>
